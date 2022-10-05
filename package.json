@@ -1,0 +1,15 @@
+{
+  "name": "dntplayable",
+  "version": "1.0.0",
+  "description": "Twitter bot that tweets newly spoiled white Magic: The Gathering cards with a blurb about how they're definitely the next big thing in Legacy Death and Taxes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.2.10"
+  }
+}

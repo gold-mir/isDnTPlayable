@@ -80,19 +80,45 @@ export const handler = async (event) => {
         if(tweet.media.length > 0) {
             tweet.media.forEach((media) => {
                 if(media.alt_text) {
-                    let match = /^[^\n]+/ //match start of string to first newline
-                    cardnames.push(media.alt_text.match(match)[0])
+                    let match = media.alt_text.match(/(?<=Magic: The Gathering card named )[^\n]+(?=.\n)/)
+                    if(match) {
+                        cardnames.push(match[0])
+                    }
                 }
             })
         }
     })
 
     let possibleCards = await getPossibleCardChoices(cardnames)
+    if(possibleCards.length === 0) {
+        console.log(`No new cards to tweet about`)
+        return;
+    }
     let card = possibleCards[Math.floor(Math.random()*possibleCards.length)]
 
+    //download card images
     let faces = await fetchCardImages(card)
-    console.log(faces)
+    let newMediaIDs = []
+
+    //for each face, upload it to twitter and then generate alt text
+    for(let [index, faceData] of faces.entries()) {
+        let face = faceData.face
+        let altText = `${faces.length > 1? `The ${index == 0? 'front' : 'back'} face of a ` : 'A'} Magic: The Gathering card named ${card.name}.
+It is a ${face.cmc} mana value ${face.type_line}${face.power || face.loyalty ? ` with ${face.power? `${face.power} power and ${face.toughness} toughness` : `${face.loyalty} loyalty`}` : ''}.
+It's oracle text is "${face.oracle_text}"`
+        let mediaID = await userClient.v1.uploadMedia(`/tmp/${faceData.filename}`)
+        await userClient.v1.createMediaMetadata(mediaID, {alt_text: {
+            text: altText
+        }})
+        newMediaIDs.push(mediaID)
+    }
+    //send the tweet
+    await userClient.v2.tweet({
+        text: `${card.name} is D&T playable`,
+        media: {
+            media_ids: newMediaIDs
+        }
+    })
+    console.log(`Successfully tweeted about ${card.name} being D&T playable`)
 
 }
-
-handler()

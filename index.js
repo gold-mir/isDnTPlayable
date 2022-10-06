@@ -1,15 +1,14 @@
 import fetch from 'node-fetch';
 import { TwitterApi } from 'twitter-api-v2';
-import secrets from './secrets.js';
 import dotenv from 'dotenv';
 import * as fs from 'node:fs/promises';
 dotenv.config()
 
 const userClient = new TwitterApi({
-    appKey: secrets.API_KEY,
-    appSecret: secrets.API_SECRET,
-    accessToken: secrets.ACCESS_TOKEN,
-    accessSecret: secrets.ACCESS_SECRET
+    appKey: process.env.API_KEY,
+    appSecret: process.env.API_SECRET,
+    accessToken: process.env.ACCESS_TOKEN,
+    accessSecret: process.env.ACCESS_SECRET
 })
 
 //fetches all tweets from the last two months (assumed to be longer than any spoiler season) with related media data attached
@@ -18,7 +17,7 @@ async function getTweetsWithMedia() {
     let startDate = new Date()
     startDate.setMonth(startDate.getMonth()-2)
     startDate.setHours(0,0,0,0)
-    let result = await userClient.v2.userTimeline(secrets.ACCOUNT_ID, {expansions: 'attachments.media_keys', 
+    let result = await userClient.v2.userTimeline(process.env.ACCOUNT_ID, {expansions: 'attachments.media_keys', 
     "media.fields": 'type,alt_text,url', 
     max_results:100, 
     start_time: startDate.toISOString(),

@@ -45,6 +45,7 @@ async function getPossibleCardChoices(exclude) {
 }
 
 async function fetchCardImages(card) {
+
     const faces = []
     if(!['transform', 'modal_dfc'].includes(card.layout)) {
         let imageURI = card.image_uris.normal
@@ -174,7 +175,7 @@ function generateBlurb(card) {
     }
 
     return `${getFirstSentence()} ${getMiddleSentence()}
-    
+
 ${getClosingSentence()}${Math.random() * 10 > 9 ? "\n\nAlso, watch The Owl House" : ''}`
 }
 
@@ -197,7 +198,7 @@ export const handler = async (event) => {
     let possibleCards = await getPossibleCardChoices(cardnames)
     if(possibleCards.length === 0) {
         console.log(`No new cards to tweet about`)
-        return;
+        return null;
     }
     let card = possibleCards[Math.floor(Math.random()*possibleCards.length)]
 
@@ -226,6 +227,6 @@ It's oracle text is "${face.oracle_text}"`
         }
     })
     console.log(`Successfully tweeted about ${card.name} being D&T playable`)
-}
 
-handler()
+    return null;
+}

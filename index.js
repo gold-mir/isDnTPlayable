@@ -72,6 +72,112 @@ async function fetchCardImages(card) {
     return faces
 }
 
+function getRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)]
+}
+
+function generateBlurb(card) {
+    let { name } = card
+    const dntCreatures = ["Thalia, Guardian of Thraben", "Stoneforge Mystic", "Yorion, Sky Nomad", "Recruiter of the Guard", "Spirit of the Labyrinth",
+    "Cathar Commando", "Skyclave Apparition", "Solitude", "Flickerwisp", "Mother of Runes", "Lion Sash", "Timeless Dragon", "Containment Priest", "Ethersworn Canonist",
+    "Sanctum Prelate", "Peacekeeper", "Serra Avenger", "Mirran Crusader", "Luminarch Aspirant", "Brightling", "Leonin Relic-Warder", "Hallowed Spiritkeeper"]
+
+    const dntSpells = ["Aether Vial", "Swords to Plowshares", "Umezawa's Jitte", "Batterskull", "Kaldra Compleat", "Council's Judgment"]
+
+    const dntCards = dntCreatures.concat(dntSpells)
+
+    const legacyDecks = ["Delver", "Naya Depths", "Reanimator", "Elves", "Elf", "Moon Stompy", "Doomsday", "8cast", "mirror", "Lands", "Storm", "Sneak and Show", "Painter",
+    "Aluren", "Nic Fit", "Death's Shadow", "Blue Pile", "4c Control", "Jeskai", "Miracles", "Burn", "12post", "\"the epic storm\"", "Oops!", "Maverick", "Omnitell",
+    "Tempo Doomsday", "Ice Station Zebra", "Eldrazi", "Merfolk", "Pox", "Belcher", "Riddlesmith", "Goblins"]
+
+    const getFirstSentence = () => {
+        let responses = [
+            `${name} looks like it'll be a new Death and Taxes staple!`,
+            `Keep an eye out for ${name} in D&T when ${process.env.TARGET_SET} drops.`,
+            `Get your foil ${name}s now, we got a D&T Staple on our hands!`,
+            `Does anybody else think ${name} might be playable in Death and Taxes?`,
+            `${name} looks like the best D&T card since ${getRandomElement(dntCreatures.concat(dntSpells))}!`,
+            `Can't wait to try ${name} in D&T!`,
+            `Is it just me or does ${name} look really good in Death and Taxes?`,
+            `${name} is the new ${getRandomElement(dntCreatures)}, you heard it here first!`
+        ]
+
+        return getRandomElement(responses)
+    }
+
+    const getMiddleSentence = () => {
+        let responseCategories = []
+
+        let genericResponses = [`It totally changes the ${getRandomElement(legacyDecks)} matchup, and I think it'll really push D&T into the top tier!`,
+        `It'll revolutionize our matchup against ${getRandomElement(legacyDecks)}, and it's servicable against Delver too!`,
+        `${getRandomElement(legacyDecks)} is a really rough matchup, but ${name} totally turns that around!`,
+        `It does a lot of work against ${getRandomElement(legacyDecks)} and ${getRandomElement(legacyDecks)}, without being dead against ${getRandomElement(legacyDecks)}.`,
+        `It's a really great reason to play 60 cards, a thing I already really wanted to do (Yorion is just too inconsistent).`,
+        `It's obviously an excellent sideboard card, that goes without saying, but I think it might be worth it maindeck as well.`,
+        `I hate losing to ${getRandomElement(legacyDecks)} and now, I won't have to!`,
+        `It'll be really good in the grindy matchups.`,
+        `It looks like the best card ever against any deck with ${getRandomElement(["Brainstorm", "Wasteland", "Dark Ritual", "Daze", "Ancient Tomb", "Green Sun's Zenith"])}`]
+
+        let recruiterResponses = [`It's a great silver bullet against ${getRandomElement(legacyDecks)}, and looks like a very worthwhile one of maindeck.`,
+            `The fact that it's a recruiter target makes it a great sideboard card for ${getRandomElement(["Grindy", "Combo", "Fast", "Slow"])} matchups.`,
+            `It's obviously a good card to begin with, but being a recruiter target really pushes it over the edge!`,
+            `I can't wait to see the look on my ${getRandomElement(legacyDecks)} opponent's face when I recruiter for it!`,
+            `It's a lot better than ${getRandomElement(dntCreatures)} as a recruiter target, which totally changes deck construction!`,
+            `I've been looking for more recruiter targets to add, since I absolutely hate playing four of my best cards.`
+        ]
+
+        let flickerwispResponses = ['It plays really nicely with Yorion', 'It plays really nice with Flickerwisp', `It's got a great ETB to get people with off of Vial!`,
+        `More ETB triggers is always a positive!`, `Looping it with ${getRandomElement['Flickerwisp', 'Yorion']} is completely backbreaking against ${getRandomElement(legacyDecks)}`,
+        `The ETB looks really nice against ${getRandomElement(legacyDecks)}.`]
+
+        let planeswalkerResponses = [`It's like white's version of ${getRandomElement(['Jace, the Mind Sculptor', 'Minsc and Boo', 'Narset', 'Grist'])}!`,
+        'Planeswalkers are always great at beating control decks and this one is no exception!',
+        `I've been looking for a good Planeswalker for the board, and this looks way better than Gideon!`]
+
+        responseCategories.push(genericResponses)
+
+        if(card.type_line.search('Creature') >=0 && card.toughness <= 2) {
+            responseCategories.push(recruiterResponses)
+        }
+
+        if(card.oracle_text.search('enters the battlefield') >= 0) {
+            responseCategories.push(flickerwispResponses)
+        }
+
+        if(card.type_line.search('Planeswalker') >= 0) {
+            responseCategories.push(planeswalkerResponses)
+        }
+
+        return getRandomElement(getRandomElement(responseCategories))
+    }
+
+    const getClosingSentence = () => {
+        let responses = [`It's definitely replacing ${getRandomElement(dntCards)} in my list!`,
+            `I'm gonna start out playing ${Math.floor(Math.random() * 3)} but I wouldn't be surprised to end up on 4!`,
+            `I'm so excited, I love getting new cards to test!`,
+            `I already preordered 4 foils, I'm really confident about this one!`,
+            `In a few months they're gonna call it ${name} and Taxes!`,
+            `I've preordered ${Math.floor(Math.random() * 25) + 4} copies just in case :)`,
+            `It'll probably be my ${getRandomElement(['61st', '81st'])} card.`,
+            `I've basically already won my next legacy fnm now that I have it!`,
+            `If anybody says this card is bad I'm gonna harass them for months about it!`,
+            `It's basically the new ${getRandomElement(dntCards)}!`,
+            `My winrate in magic online practice rooms with this is gonna be astronomical!`,
+            `Can't wait to win the next legacy challenge with it :)`,
+            `I just wish it had more arts so I could mismatch them :(`,
+            `${getRandomElement(dntCards)} has felt mediocre for a while, can't wait to try this out instead!`,
+            `I will be maindecking at least 3 copies.`,
+            `If you don't play 4 your deck is terrible and I hate you.`
+        ]
+
+        return getRandomElement(responses)
+    }
+
+    return `${getFirstSentence()} ${getMiddleSentence()}
+    
+${getClosingSentence()}${Math.random() * 10 > 9 ? "\n\nAlso, watch The Owl House" : ''}`
+}
+
 export const handler = async (event) => {
     let prevTweets = await getTweetsWithMedia()
     let cardnames = []
@@ -112,12 +218,14 @@ It's oracle text is "${face.oracle_text}"`
         newMediaIDs.push(mediaID)
     }
     //send the tweet
+    let blurb = generateBlurb(card)
     await userClient.v2.tweet({
-        text: `${card.name} is D&T playable`,
+        text: blurb,
         media: {
             media_ids: newMediaIDs
         }
     })
     console.log(`Successfully tweeted about ${card.name} being D&T playable`)
-
 }
+
+handler()

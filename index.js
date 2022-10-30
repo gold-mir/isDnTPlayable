@@ -34,7 +34,7 @@ async function getTweetsWithMedia() {
 }
 
 //fetches a list of cards, then removes all cards with a name matching the exclude list
-async function getPossibleCardChoices(exclude) {
+export async function getPossibleCardChoices(exclude) {
     let now = new Date()
     let dateString = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`
     const query = `order=cmc&q=c=w+not:reprint+date>${dateString}`
@@ -79,7 +79,7 @@ function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)]
 }
 
-function generateBlurb(card) {
+export function generateBlurb(card) {
     let { name } = card
     const dntCreatures = ["Thalia, Guardian of Thraben", "Stoneforge Mystic", "Yorion, Sky Nomad", "Recruiter of the Guard", "Spirit of the Labyrinth",
     "Cathar Commando", "Skyclave Apparition", "Solitude", "Flickerwisp", "Mother of Runes", "Lion Sash", "Timeless Dragon", "Containment Priest", "Ethersworn Canonist",
@@ -223,7 +223,7 @@ It's oracle text is "${face.oracle_text}"`
         newMediaIDs.push(mediaID)
     }
     //send the tweet
-    let blurb = generateBlurb(card)
+    let blurb = generateBlurb(['transform', 'modal_dfc'].includes(card.layout)? {...card, ...card.card_faces[0]} : card)
     await userClient.v2.tweet({
         text: blurb,
         media: {

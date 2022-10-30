@@ -35,7 +35,9 @@ async function getTweetsWithMedia() {
 
 //fetches a list of cards, then removes all cards with a name matching the exclude list
 async function getPossibleCardChoices(exclude) {
-    const query = `order=cmc&q=c=w+not:reprint+set=${process.env.TARGET_SET}`
+    let now = new Date()
+    let dateString = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`
+    const query = `order=cmc&q=c=w+not:reprint+date>${dateString}`
     const url = new URL(`https://api.scryfall.com/cards/search?${query}`)
     
     let response = await fetch(url.href)
@@ -94,7 +96,7 @@ function generateBlurb(card) {
     const getFirstSentence = () => {
         let responses = [
             `${name} looks like it'll be a new Death and Taxes staple!`,
-            `Keep an eye out for ${name} in D&T when ${process.env.TARGET_SET} drops.`,
+            `Keep an eye out for ${name} in D&T when ${String.prototype.toUpperCase(card.set)} drops.`,
             `Get your foil ${name}s now, we got a D&T Staple on our hands!`,
             `Does anybody else think ${name} might be playable in Death and Taxes?`,
             `${name} looks like the best D&T card since ${getRandomElement(dntCreatures.concat(dntSpells))}!`,
@@ -117,7 +119,7 @@ function generateBlurb(card) {
         `It's obviously an excellent sideboard card, that goes without saying, but I think it might be worth it maindeck as well.`,
         `I hate losing to ${getRandomElement(legacyDecks)} and now, I won't have to!`,
         `It'll be really good in the grindy matchups.`,
-        `It looks like the best card ever against any deck with ${getRandomElement(["Brainstorm", "Wasteland", "Dark Ritual", "Daze", "Ancient Tomb", "Green Sun's Zenith"])}`]
+        `It looks like the best card ever against any deck with ${getRandomElement(["Brainstorm", "Wasteland", "Dark Ritual", "Daze", "Ancient Tomb", "Green Sun's Zenith"])}.`]
 
         let recruiterResponses = [`It's a great silver bullet against ${getRandomElement(legacyDecks)}, and looks like a very worthwhile one of maindeck.`,
             `The fact that it's a recruiter target makes it a great sideboard card for ${getRandomElement(["Grindy", "Combo", "Fast", "Slow"])} matchups.`,
@@ -128,7 +130,7 @@ function generateBlurb(card) {
         ]
 
         let flickerwispResponses = ['It plays really nicely with Yorion', 'It plays really nice with Flickerwisp', `It's got a great ETB to get people with off of Vial!`,
-        `More ETB triggers is always a positive!`, `Looping it with ${getRandomElement['Flickerwisp', 'Yorion']} is completely backbreaking against ${getRandomElement(legacyDecks)}`,
+        `More ETB triggers is always a positive!`, `Looping it with ${getRandomElement(['Flickerwisp', 'Yorion'])} is completely backbreaking against ${getRandomElement(legacyDecks)}`,
         `The ETB looks really nice against ${getRandomElement(legacyDecks)}.`]
 
         let planeswalkerResponses = [`It's like white's version of ${getRandomElement(['Jace, the Mind Sculptor', 'Minsc and Boo', 'Narset', 'Grist'])}!`,
@@ -154,21 +156,23 @@ function generateBlurb(card) {
 
     const getClosingSentence = () => {
         let responses = [`It's definitely replacing ${getRandomElement(dntCards)} in my list!`,
-            `I'm gonna start out playing ${Math.floor(Math.random() * 3)} but I wouldn't be surprised to end up on 4!`,
+            `I'm gonna start out playing ${Math.floor(Math.random() * 4)} but I wouldn't be surprised to end up on 4!`,
             `I'm so excited, I love getting new cards to test!`,
             `I already preordered 4 foils, I'm really confident about this one!`,
             `In a few months they're gonna call it ${name} and Taxes!`,
             `I've preordered ${Math.floor(Math.random() * 25) + 4} copies just in case :)`,
             `It'll probably be my ${getRandomElement(['61st', '81st'])} card.`,
             `I've basically already won my next legacy fnm now that I have it!`,
-            `If anybody says this card is bad I'm gonna harass them for months about it!`,
+            `If anybody says this card is bad they're basically harassing me!`,
             `It's basically the new ${getRandomElement(dntCards)}!`,
             `My winrate in magic online practice rooms with this is gonna be astronomical!`,
             `Can't wait to win the next legacy challenge with it :)`,
             `I just wish it had more arts so I could mismatch them :(`,
             `${getRandomElement(dntCards)} has felt mediocre for a while, can't wait to try this out instead!`,
             `I will be maindecking at least 3 copies.`,
-            `If you don't play 4 your deck is terrible and I hate you.`
+            `If you don't play 4 your deck is terrible and I hate you.`,
+            `I can't wait to laugh at all the haters in six months when this wins every legacy challenge.`,
+            
         ]
 
         return getRandomElement(responses)

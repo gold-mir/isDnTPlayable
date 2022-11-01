@@ -36,7 +36,7 @@ async function getTweetsWithMedia() {
 //fetches a list of cards, then removes all cards with a name matching the exclude list
 export async function getPossibleCardChoices(exclude) {
     let now = new Date()
-    let dateString = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`
+    let dateString = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`
     const query = `order=cmc&q=c=w+not:reprint+date>${dateString}`
     const url = new URL(`https://api.scryfall.com/cards/search?${query}`)
     
@@ -60,7 +60,7 @@ async function fetchCardImages(card) {
         })
     } else {
         for(let face of card.card_faces) {
-            console.log(face)
+            // console.log(face)
             let imageURI = face.image_uris.normal
             let filename = `${face.name}.jpg`
             let response = await fetch(imageURI)

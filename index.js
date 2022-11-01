@@ -96,7 +96,7 @@ export function generateBlurb(card) {
     const getFirstSentence = () => {
         let responses = [
             `${name} looks like it'll be a new Death and Taxes staple!`,
-            `Keep an eye out for ${name} in D&T when ${String.prototype.toUpperCase(card.set)} drops.`,
+            `Keep an eye out for ${name} in D&T when ${card.set.toUpperCase()} drops.`,
             `Get your foil ${name}s now, we got a D&T Staple on our hands!`,
             `Does anybody else think ${name} might be playable in Death and Taxes?`,
             `${name} looks like the best D&T card since ${getRandomElement(dntCreatures.concat(dntSpells))}!`,
